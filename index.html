@@ -1,443 +1,632 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aqua Bridge - Connecting Shrimp Farmers to Buyers</title>
-    <link rel="icon" href="favicon.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .hero-bg {
-            background-color: #005A9C;
-            background-image: linear-gradient(120deg, #003F6B 0%, #005A9C 100%);
-        }
-        .price-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .price-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .price-update-dot {
-            width: 10px;
-            height: 10px;
-            background-color: #34D399;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-        .modal-backdrop {
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-        /* Team Circle Styles */
-        .team-circle-container {
-            position: relative;
-            width: 400px;
-            height: 400px;
-            margin: 4rem auto;
-        }
-        .team-circle-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-        .team-member {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-        }
-        .team-member img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 4px solid white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        /* Positioning team members in a circle */
-        .member-1 { top: 0%; left: 50%; transform: translate(-50%, -50%); }
-        .member-2 { top: 25%; left: 93.3%; transform: translate(-50%, -50%); }
-        .member-3 { top: 75%; left: 93.3%; transform: translate(-50%, -50%); }
-        .member-4 { top: 100%; left: 50%; transform: translate(-50%, -50%); }
-        .member-5 { top: 75%; left: 6.7%; transform: translate(-50%, -50%); }
-        .member-6 { top: 25%; left: 6.7%; transform: translate(-50%, -50%); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aqua Bridge — Connecting Shrimp Farmers to Buyers</title>
+<meta name="description" content="Aqua Bridge connects shrimp farmers in Andhra Pradesh directly to buyers — efficient harvesting, fair market prices, and same-day spot payments.">
+<link rel="icon" href="favicon.png">
 
-        .circle-connector {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 2px dashed #3B82F6;
-            border-radius: 50%;
-            z-index: -1;
-            animation: rotate 30s linear infinite;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-    </style>
+<style>
+/* ============ DESIGN TOKENS ============ */
+:root{
+  --abyss:#042f30;
+  --deep:#063e40;
+  --teal:#0f8a82;
+  --aqua:#19b9ac;
+  --seafoam:#5fd6c4;
+  --foam:#e7faf5;
+  --sand:#f6f1e7;
+  --sand-2:#fbf8f1;
+  --coral:#ff5b3e;
+  --coral-deep:#e8472b;
+  --amber:#f7a23b;
+  --ink:#06282a;
+  --ink-soft:#3c5a5b;
+  --line:rgba(6,62,64,.12);
+  --shadow-sm:0 2px 8px rgba(4,47,48,.06);
+  --shadow-md:0 18px 40px -18px rgba(4,47,48,.28);
+  --shadow-lg:0 40px 80px -30px rgba(4,47,48,.45);
+  --rad:22px;
+  --maxw:1200px;
+  --display:'Fraunces',serif;
+  --body:'Hanken Grotesk',system-ui,sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--body);
+  color:var(--ink);
+  background:var(--sand);
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+section{position:relative}
+
+/* grain overlay */
+body::before{
+  content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============ TYPE ============ */
+.eyebrow{
+  font-family:var(--body);font-weight:600;font-size:.78rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--teal);display:inline-flex;align-items:center;gap:.55rem;
+}
+.eyebrow::before{content:"";width:26px;height:2px;background:var(--coral);border-radius:2px}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.04;letter-spacing:-.02em}
+.section-head{max-width:640px;margin-bottom:54px}
+.section-head h2{font-size:clamp(2.1rem,4.6vw,3.4rem);margin:18px 0 14px;color:var(--ink)}
+.section-head p{color:var(--ink-soft);font-size:1.08rem;max-width:520px}
+
+/* ============ HEADER ============ */
+header{position:sticky;top:0;z-index:200;transition:all .35s ease}
+.nav{
+  max-width:var(--maxw);margin:0 auto;padding:20px 28px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+header.scrolled{backdrop-filter:blur(14px);background:rgba(246,241,231,.82);box-shadow:0 1px 0 var(--line)}
+header.scrolled .nav{padding:13px 28px}
+.brand{font-family:var(--display);font-weight:700;font-size:1.5rem;letter-spacing:-.02em;display:flex;align-items:center;gap:.5rem;color:var(--ink)}
+.brand .drop{width:13px;height:13px;border-radius:50% 50% 50% 0;background:var(--coral);transform:rotate(45deg);box-shadow:0 0 0 4px rgba(255,91,62,.16)}
+.brand b{color:var(--teal);font-weight:700}
+.navlinks{display:flex;gap:34px;align-items:center}
+.navlinks a{font-weight:500;font-size:.97rem;color:var(--ink-soft);position:relative;transition:color .2s}
+.navlinks a::after{content:"";position:absolute;left:0;bottom:-6px;width:0;height:2px;background:var(--coral);transition:width .25s}
+.navlinks a:hover{color:var(--ink)}
+.navlinks a:hover::after{width:100%}
+.nav-cta{display:flex;gap:12px;align-items:center}
+.btn{
+  font-family:var(--body);font-weight:600;font-size:.95rem;border:none;cursor:pointer;
+  padding:.78rem 1.5rem;border-radius:100px;transition:transform .2s,box-shadow .25s,background .2s;
+  display:inline-flex;align-items:center;gap:.5rem;white-space:nowrap;
+}
+.btn-primary{background:var(--coral);color:#fff;box-shadow:0 10px 24px -8px rgba(232,71,43,.6)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 30px -10px rgba(232,71,43,.7);background:var(--coral-deep)}
+.btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn-ghost:hover{border-color:var(--teal);color:var(--teal)}
+.btn-light{background:#fff;color:var(--deep);box-shadow:var(--shadow-md)}
+.btn-light:hover{transform:translateY(-2px)}
+.btn-outline-light{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+.btn-outline-light:hover{background:rgba(255,255,255,.16)}
+.hamburger{display:none;background:none;border:none;cursor:pointer;color:var(--ink)}
+.mobile-menu{display:none}
+
+/* ============ HERO ============ */
+.hero{
+  background:radial-gradient(120% 120% at 80% -10%,#0a5a55 0%,var(--deep) 42%,var(--abyss) 100%);
+  color:#fff;overflow:hidden;padding-top:40px;
+}
+.hero .wrap{position:relative;z-index:3}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;padding:46px 0 0}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:.6rem;background:rgba(95,214,196,.14);
+  border:1px solid rgba(95,214,196,.3);color:var(--seafoam);font-weight:600;font-size:.82rem;
+  letter-spacing:.04em;padding:.45rem 1rem;border-radius:100px;margin-bottom:26px;
+}
+.hero-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--seafoam);box-shadow:0 0 0 0 rgba(95,214,196,.6);animation:pulse 2.2s infinite}
+.hero h1{font-size:clamp(2.6rem,5.6vw,4.6rem);font-weight:600;letter-spacing:-.03em}
+.hero h1 em{font-style:italic;font-weight:500;color:var(--seafoam)}
+.hero h1 .shrimp{position:relative;white-space:nowrap}
+.hero h1 .shrimp::after{content:"";position:absolute;left:0;right:0;bottom:.08em;height:.14em;background:var(--coral);border-radius:4px;opacity:.85}
+.hero p.lede{font-size:1.18rem;color:rgba(231,250,245,.85);margin:24px 0 34px;max-width:520px}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.hero-trust{margin-top:38px;display:flex;gap:30px;flex-wrap:wrap}
+.hero-trust .t{display:flex;flex-direction:column}
+.hero-trust .t b{font-family:var(--display);font-size:1.7rem;font-weight:600;color:#fff;line-height:1}
+.hero-trust .t span{font-size:.82rem;color:rgba(231,250,245,.65);margin-top:5px;letter-spacing:.02em}
+
+/* hero visual */
+.hero-visual{position:relative}
+.hero-img-card{
+  position:relative;border-radius:28px;overflow:hidden;
+  box-shadow:0 50px 90px -30px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.12);
+  transform:rotate(1.4deg);
+}
+.hero-img-card img{width:100%;height:100%;object-fit:cover;aspect-ratio:4/3}
+.float-card{
+  position:absolute;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);color:var(--ink);
+  border-radius:16px;padding:.85rem 1.05rem;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:.7rem;
+  animation:float 5s ease-in-out infinite;
+}
+.float-card .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex-shrink:0}
+.float-card small{display:block;color:var(--ink-soft);font-size:.72rem;font-weight:500}
+.float-card strong{font-size:.98rem;font-weight:700}
+.fc-1{top:-18px;left:-26px;animation-delay:.2s}
+.fc-1 .ic{background:#e7faf5;color:var(--teal)}
+.fc-2{bottom:18px;right:-22px;animation-delay:1.1s}
+.fc-2 .ic{background:#fff0eb;color:var(--coral)}
+
+/* wave divider */
+.wave-bottom{position:relative;line-height:0;z-index:2}
+.wave-bottom svg{width:100%;height:auto;display:block}
+
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(95,214,196,.55)}70%{box-shadow:0 0 0 12px rgba(95,214,196,0)}100%{box-shadow:0 0 0 0 rgba(95,214,196,0)}}
+
+/* ============ MARQUEE STRIP ============ */
+.strip{background:var(--ink);color:var(--foam);overflow:hidden;padding:16px 0}
+.marquee{display:flex;white-space:nowrap;animation:scroll 26s linear infinite;width:max-content}
+.marquee span{font-family:var(--display);font-style:italic;font-size:1.15rem;padding:0 30px;display:inline-flex;align-items:center;gap:30px;color:rgba(231,250,245,.9)}
+.marquee span::after{content:"✦";color:var(--coral);font-style:normal;font-size:.8rem}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ============ SERVICES ============ */
+.services{padding:100px 0;background:var(--sand)}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.svc{
+  background:var(--sand-2);border:1px solid var(--line);border-radius:var(--rad);padding:34px 30px;
+  position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s,border-color .3s;
+}
+.svc::before{content:"";position:absolute;inset:0;background:linear-gradient(160deg,transparent 60%,rgba(25,185,172,.06));opacity:0;transition:opacity .3s}
+.svc:hover{transform:translateY(-6px);box-shadow:var(--shadow-md);border-color:rgba(25,185,172,.4)}
+.svc:hover::before{opacity:1}
+.svc.feature{background:linear-gradient(155deg,var(--teal),var(--deep));color:#fff;border:none}
+.svc.feature .svc-ic{background:rgba(255,255,255,.14);color:#fff}
+.svc.feature h3{color:#fff}
+.svc.feature p{color:rgba(231,250,245,.82)}
+.svc-ic{
+  width:54px;height:54px;border-radius:15px;background:var(--foam);color:var(--teal);
+  display:grid;place-items:center;margin-bottom:20px;transition:transform .3s;
+}
+.svc:hover .svc-ic{transform:scale(1.08) rotate(-4deg)}
+.svc h3{font-size:1.32rem;margin-bottom:10px;font-weight:600}
+.svc p{color:var(--ink-soft);font-size:.98rem}
+.svc .num{position:absolute;top:24px;right:28px;font-family:var(--display);font-size:1rem;color:var(--coral);opacity:.6;font-weight:600}
+.svc.feature .num{color:var(--seafoam);opacity:.9}
+
+/* ============ LIVE PRICES ============ */
+.prices{padding:100px 0;background:var(--deep);color:#fff;overflow:hidden}
+.prices::before{content:"";position:absolute;top:-120px;right:-120px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(25,185,172,.35),transparent 70%);filter:blur(20px)}
+.prices-top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;margin-bottom:46px;position:relative;z-index:2}
+.prices .eyebrow{color:var(--seafoam)}
+.prices .eyebrow::before{background:var(--coral)}
+.prices-top h2{font-size:clamp(2.1rem,4.6vw,3.4rem);color:#fff;margin-top:16px}
+.live-badge{display:inline-flex;align-items:center;gap:.6rem;background:rgba(255,91,62,.16);border:1px solid rgba(255,91,62,.4);color:#ffb3a3;padding:.5rem 1rem;border-radius:100px;font-weight:600;font-size:.85rem}
+.live-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--coral);animation:pulse 2s infinite}
+.updated{color:rgba(231,250,245,.6);font-size:.85rem;margin-top:10px}
+.price-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;position:relative;z-index:2}
+.pcard{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;
+  padding:22px 18px;position:relative;overflow:hidden;transition:transform .25s,background .25s,border-color .25s;
+}
+.pcard:hover{transform:translateY(-5px);background:rgba(255,255,255,.09);border-color:rgba(95,214,196,.5)}
+.pcard .grade{font-size:.85rem;color:var(--seafoam);font-weight:600;letter-spacing:.03em}
+.pcard .val{font-family:var(--display);font-size:2.1rem;font-weight:600;margin:8px 0 6px;line-height:1}
+.pcard .val .cur{font-size:1.1rem;color:rgba(231,250,245,.7);vertical-align:super;margin-right:2px}
+.pcard .unit{font-size:.74rem;color:rgba(231,250,245,.55)}
+.pcard .bar{position:absolute;left:0;bottom:0;height:3px;background:var(--coral);width:40%}
+.price-note{margin-top:24px;color:rgba(231,250,245,.6);font-size:.85rem;text-align:center;position:relative;z-index:2}
+
+/* ============ ABOUT ============ */
+.about{padding:110px 0;background:var(--sand)}
+.about-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:64px;align-items:center}
+.about-imgwrap{position:relative}
+.about-imgwrap img{border-radius:24px;box-shadow:var(--shadow-lg);width:100%;object-fit:cover;aspect-ratio:5/4}
+.about-imgwrap .badge{
+  position:absolute;bottom:-22px;left:-22px;background:var(--coral);color:#fff;border-radius:20px;
+  padding:18px 22px;box-shadow:var(--shadow-md);max-width:200px;
+}
+.about-imgwrap .badge b{font-family:var(--display);font-size:1.4rem;display:block}
+.about-imgwrap .badge span{font-size:.82rem;opacity:.92}
+.about h2{font-size:clamp(2rem,4.4vw,3.1rem);margin:16px 0 22px}
+.about p{color:var(--ink-soft);font-size:1.05rem;margin-bottom:18px;max-width:540px}
+.about-points{list-style:none;margin-top:28px;display:grid;gap:14px}
+.about-points li{display:flex;gap:12px;align-items:flex-start;font-weight:500}
+.about-points .chk{flex-shrink:0;width:24px;height:24px;border-radius:8px;background:var(--foam);color:var(--teal);display:grid;place-items:center;margin-top:2px}
+
+/* ============ TEAM ============ */
+.team{padding:0 0 110px;background:var(--sand)}
+.team-card{
+  max-width:760px;margin:0 auto;background:linear-gradient(150deg,var(--abyss),var(--deep));
+  border-radius:30px;overflow:hidden;display:grid;grid-template-columns:300px 1fr;
+  box-shadow:var(--shadow-lg);color:#fff;
+}
+.team-card img{width:100%;height:100%;object-fit:cover;min-height:340px}
+.team-info{padding:44px 40px;display:flex;flex-direction:column;justify-content:center}
+.team-info .role{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--seafoam);font-weight:600}
+.team-info h3{font-size:2.2rem;margin:10px 0 16px}
+.team-info p{color:rgba(231,250,245,.8);font-size:1rem;margin-bottom:22px}
+.team-socials{display:flex;gap:12px}
+.team-socials a{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.1);display:grid;place-items:center;color:#fff;transition:background .2s,transform .2s}
+.team-socials a:hover{background:var(--coral);transform:translateY(-3px)}
+
+/* ============ CONTACT ============ */
+.contact{padding:110px 0;background:var(--sand-2)}
+.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:980px;margin:0 auto}
+.ccard{
+  background:var(--sand);border:1px solid var(--line);border-radius:var(--rad);padding:36px 30px;text-align:center;
+  transition:transform .3s,box-shadow .3s;display:flex;flex-direction:column;align-items:center;
+}
+.ccard:hover{transform:translateY(-6px);box-shadow:var(--shadow-md)}
+.ccard .ic{width:60px;height:60px;border-radius:18px;display:grid;place-items:center;margin-bottom:18px}
+.ccard.phone .ic{background:var(--foam);color:var(--teal)}
+.ccard.mail .ic{background:#fff0eb;color:var(--coral)}
+.ccard.wa .ic{background:#e7f8ee;color:#1faa5b}
+.ccard h3{font-size:1.25rem;margin-bottom:8px}
+.ccard a,.ccard .info{color:var(--ink-soft);font-weight:500;word-break:break-word}
+.ccard a:hover{color:var(--ink)}
+.ccard .btn{margin-top:18px;background:#1faa5b;color:#fff;box-shadow:0 10px 22px -8px rgba(31,170,91,.6)}
+.ccard .btn:hover{transform:translateY(-2px);background:#178a4a}
+
+/* ============ FOOTER ============ */
+footer{background:var(--abyss);color:rgba(231,250,245,.7);padding:70px 0 0}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1.4fr;gap:50px;padding-bottom:50px}
+.foot-brand{font-family:var(--display);font-weight:700;font-size:1.6rem;color:#fff;display:flex;align-items:center;gap:.5rem;margin-bottom:16px}
+.foot-brand b{color:var(--seafoam)}
+.foot-brand .drop{width:12px;height:12px;border-radius:50% 50% 50% 0;background:var(--coral);transform:rotate(45deg)}
+.foot p{max-width:320px;margin-bottom:20px}
+.foot-soc{display:flex;gap:12px}
+.foot-soc a{width:40px;height:40px;border-radius:11px;background:rgba(255,255,255,.07);display:grid;place-items:center;color:#fff;transition:background .2s,transform .2s}
+.foot-soc a:hover{background:var(--coral);transform:translateY(-3px)}
+.foot h4{font-family:var(--body);color:#fff;font-size:1rem;font-weight:600;margin-bottom:18px;letter-spacing:.02em}
+.foot ul{list-style:none}
+.foot ul li{margin-bottom:11px}
+.foot ul a{transition:color .2s}
+.foot ul a:hover{color:var(--seafoam)}
+.foot-contact li{display:flex;gap:11px;align-items:flex-start;margin-bottom:14px}
+.foot-contact .ic{color:var(--seafoam);flex-shrink:0;margin-top:3px}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.1);padding:24px 0;text-align:center;font-size:.85rem;color:rgba(231,250,245,.5)}
+
+/* ============ MODAL ============ */
+.modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(4,47,48,.6);backdrop-filter:blur(6px)}
+.modal.show{display:flex;animation:fade .3s ease}
+.modal-box{background:var(--sand-2);border-radius:24px;padding:44px 38px;max-width:400px;text-align:center;box-shadow:var(--shadow-lg);position:relative;animation:pop .35s cubic-bezier(.2,.9,.3,1.3)}
+.modal-box .mic{width:64px;height:64px;border-radius:20px;background:var(--foam);color:var(--teal);display:grid;place-items:center;margin:0 auto 20px}
+.modal-box h3{font-size:1.7rem;margin-bottom:12px}
+.modal-box p{color:var(--ink-soft);margin-bottom:26px}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ============ REVEAL ANIM ============ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:980px){
+  .hero-grid{grid-template-columns:1fr;gap:54px;padding-top:30px}
+  .hero-visual{max-width:480px;margin:0 auto}
+  .svc-grid{grid-template-columns:repeat(2,1fr)}
+  .price-grid{grid-template-columns:repeat(3,1fr)}
+  .about-grid{grid-template-columns:1fr;gap:40px}
+  .about-imgwrap{max-width:480px}
+  .contact-grid{grid-template-columns:1fr;max-width:440px}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:36px}
+  .team-card{grid-template-columns:1fr}
+  .team-card img{min-height:260px}
+}
+@media(max-width:720px){
+  .navlinks,.nav-cta{display:none}
+  .hamburger{display:block}
+  .mobile-menu{display:none;flex-direction:column;gap:4px;padding:0 28px 22px}
+  .mobile-menu.open{display:flex}
+  .mobile-menu a{padding:11px 0;color:var(--ink-soft);font-weight:500;border-bottom:1px solid var(--line)}
+  .mobile-menu .btn{margin-top:12px;justify-content:center}
+  .svc-grid{grid-template-columns:1fr}
+  .price-grid{grid-template-columns:repeat(2,1fr)}
+  .foot-grid{grid-template-columns:1fr;text-align:center}
+  .foot p,.foot-brand{margin-left:auto;margin-right:auto;justify-content:center}
+  .foot-soc,.foot-contact li{justify-content:center}
+  .foot-contact li{text-align:left}
+  .wrap{padding:0 20px}
+}
+</style>
 </head>
-<body class="bg-gray-50">
+<body>
 
-    <!-- Header -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-blue-700">
-                <span class="text-blue-900">Aqua</span>Bridge
-            </a>
-            <div class="hidden md:flex items-center space-x-8">
-                <a href="#services" class="text-gray-600 hover:text-blue-700">Services</a>
-                <a href="#live-prices" class="text-gray-600 hover:text-blue-700">Live Prices</a>
-                <a href="#contact" class="text-gray-600 hover:text-blue-700">Contact</a>
-                <a href="#team" class="text-gray-600 hover:text-blue-700">Our Team</a>
-                <a href="#about" class="text-gray-600 hover:text-blue-700">About Us</a>
-            </div>
-            <div class="hidden md:flex items-center space-x-4">
-                <a href="#contact" class="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition duration-300">Get Started</a>
-                <button id="download-app-button" class="border border-blue-600 text-blue-600 px-6 py-2 rounded-full hover:bg-blue-50 transition duration-300">Download App</button>
-            </div>
-            <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
-        </nav>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden px-6 pt-2 pb-4">
-            <a href="#services" class="block text-gray-600 hover:text-blue-700 py-2">Services</a>
-            <a href="#live-prices" class="block text-gray-600 hover:text-blue-700 py-2">Live Prices</a>
-            <a href="#contact" class="block text-gray-600 hover:text-blue-700 py-2">Contact</a>
-            <a href="#team" class="text-gray-600 hover:text-blue-700">Our Team</a>
-            <a href="#about" class="block text-gray-600 hover:text-blue-700 py-2">About Us</a>
-            <a href="#contact" class="block bg-blue-600 text-white text-center mt-2 px-6 py-2 rounded-full hover:bg-blue-700 transition duration-300">Get Started</a>
-            <button id="download-app-button-mobile" class="w-full text-center border border-blue-600 text-blue-600 mt-2 px-6 py-2 rounded-full hover:bg-blue-50 transition duration-300">Download App</button>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero-bg text-white">
-        <div class="container mx-auto px-6 py-20 md:py-24 flex flex-col items-center justify-center">
-            <div class="w-full text-center">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4">The Future of Shrimp Harvesting is Here</h1>
-                <p class="text-lg md:text-xl text-blue-100 mb-8 max-w-3xl mx-auto">Aqua Bridge connects shrimp farmers directly to the market, ensuring fair prices, transparent processes, and instant payments. Focus on farming, we'll handle the rest.</p>
-                <a href="#services" class="bg-white text-blue-700 font-bold px-8 py-4 rounded-full hover:bg-gray-100 transition duration-300 text-lg">Explore Our Services</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section id="services" class="py-20 bg-gray-50">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Our Services</h2>
-                <p class="text-gray-600 mt-2">Comprehensive solutions for modern shrimp farmers.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Service Card 1 -->
-                <div class="bg-white p-8 rounded-lg shadow-md text-center">
-                    <div class="mb-4">
-                        <svg class="w-16 h-16 mx-auto text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.085a2 2 0 00-1.736.97l-1.9 3.8a2 2 0 00.23 2.16l3.2 3.2m7-10l-3.2 3.2"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Efficient Harvesting</h3>
-                    <p class="text-gray-600">We provide professional and timely harvesting services, minimizing stress on your shrimp and maximizing yield quality.</p>
-                </div>
-                <!-- Service Card 2 -->
-                <div class="bg-white p-8 rounded-lg shadow-md text-center">
-                    <div class="mb-4">
-                        <svg class="w-16 h-16 mx-auto text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Spot Payment</h3>
-                    <p class="text-gray-600">No more waiting. Get immediate payment for your produce right at the farm gate, ensuring financial stability and peace of mind.</p>
-                </div>
-                <!-- Service Card 3 -->
-                <div class="bg-white p-8 rounded-lg shadow-md text-center">
-                    <div class="mb-4">
-                        <svg class="w-16 h-16 mx-auto text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Fair Market Price</h3>
-                    <p class="text-gray-600">With our direct buyer connections and transparent pricing, we guarantee you get the best possible rate for your shrimp.</p>
-                </div>
-                <!-- NEW Service Card 4 -->
-                <div class="bg-white p-8 rounded-lg shadow-md text-center">
-                    <div class="mb-4">
-                        <svg class="w-16 h-16 mx-auto text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Smart Price Matching</h3>
-                    <p class="text-gray-600">Our smart algorithm matches your harvest with the highest-bidding buyers, ensuring you always get the most competitive price.</p>
-                </div>
-                <!-- NEW Service Card 5 -->
-                <div class="bg-white p-8 rounded-lg shadow-md text-center">
-                    <div class="mb-4">
-                        <svg class="w-16 h-16 mx-auto text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">24/7 Farmer Support</h3>
-                    <p class="text-gray-600">Have questions? Our team of aquaculture experts is available around the clock to help you with your farming needs.</p>
-                </div>
-                <!-- NEW Service Card 6 -->
-                <div class="bg-white p-8 rounded-lg shadow-md text-center">
-                    <div class="mb-4">
-                        <svg class="w-16 h-16 mx-auto text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Free Lab Testing</h3>
-                    <p class="text-gray-600">We offer complimentary water and soil testing to help you maintain a healthy environment for optimal shrimp growth.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Our Team Section -->
-    <section id="team" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Meet Our Team</h2>
-                <p class="text-gray-600 mt-2">The dedicated professionals behind Aqua Bridge.</p>
-            </div>
-            
-            <!-- Desktop Team Circle -->
-            <div class="hidden md:flex justify-center items-center">
-                <div class="team-circle-container">
-                    <div class="circle-connector"></div>
-                    <div class="team-circle-center">
-                        <h3 class="text-3xl font-bold text-blue-700"><span class="text-blue-900">Aqua</span>Bridge</h3>
-                    </div>
-                    <div class="team-member member-1"><img src="myimage.jpg" alt="Team Member 1"></div>
-                     </div>
-            </div>
-
-            <!-- Mobile Team Grid -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-8 md:hidden">
-                <div class="text-center">
-                    <img src="myimage.jpg" alt="Team Member 1" class="mx-auto rounded-full w-24 h-24 mb-2 border-4 border-white shadow-lg">
-                    <h4 class="font-bold">Murali Krishna</h4>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Live Shrimp Prices Section -->
-    <section id="live-prices" class="py-20 bg-gray-50">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Andhra Shrimp Prices</h2>
-                <p class="text-gray-600 mt-2">La
-                    st updated: <span id="last-updated"></span></p>
-            </div>
-            <div id="price-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                <!-- Price cards will be injected here by JavaScript -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Get in Touch</h2>
-                <p class="text-gray-600 mt-2">We're here to help. Contact us through any of the channels below.</p>
-            </div>
-            <div class="max-w-5xl mx-auto bg-white p-6 md:p-12 rounded-lg shadow-lg">
-                <div class="grid grid-cols-3 gap-2 md:gap-10 text-center">
-                    
-                    <!-- Phone Number -->
-                    <div class="flex flex-col items-center justify-start">
-                        <svg class="w-8 h-8 md:w-12 md:h-12 text-blue-600 mb-2 md:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                        <h3 class="text-base md:text-xl font-semibold text-gray-800 mb-1">Phone</h3>
-                        <a href="tel:+919492391762" class="text-sm md:text-lg text-gray-600 hover:text-blue-700 transition duration-300">+919492391762</a>
-                    </div>
-
-                    <!-- Email -->
-                    <div class="flex flex-col items-center justify-start">
-                        <svg class="w-8 h-8 md:w-12 md:h-12 text-blue-600 mb-2 md:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                        <h3 class="text-base md:text-xl font-semibold text-gray-800 mb-1">Email</h3>
-                        <a href="mailto:aquabridgeindia@gmail.com" class="text-sm md:text-lg text-gray-600 hover:text-blue-700 transition duration-300 break-all">aquabridgeindia@gmail.com</a>
-                    </div>
-
-                    <!-- WhatsApp -->
-                    <div class="flex flex-col items-center justify-start">
-                         <svg class="w-8 h-8 md:w-12 md:h-12 text-green-500 mb-2 md:mb-4" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01s-.521.074-.792.372c-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.203 5.076 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-                        <h3 class="text-base md:text-xl font-semibold text-gray-800 mb-1">WhatsApp</h3>
-                         <a href="https://wa.me/919492391762" target="_blank" rel="noopener noreferrer" class="bg-green-500 text-white font-bold px-4 py-2 md:px-6 md:py-3 rounded-full hover:bg-green-600 transition duration-300 mt-2 inline-block text-sm md:text-base">Connect Now</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Us Section -->
-    <section id="about" class="py-20 bg-gray-50">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800">Who We Are</h2>
-                <p class="text-gray-600 mt-2">Revolutionizing the shrimp supply chain, one harvest at a time.</p>
-            </div>
-            <div class="flex flex-col md:flex-row items-center gap-12">
-                <div class="hidden md:block md:w-5/12 h-80">
-                    <img src="aqgya.png" 
-                         onerror="this.onerror=null;this.src='https://placehold.co/500x333/CCCCCC/FFFFFF?text=Image+Not+Found';"
-                         alt="Shrimp farmer with a fresh harvest" class="rounded-lg shadow-lg w-full h-full object-cover">
-                </div>
-                <div class="md:w-7/12 text-center md:text-left">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Our Mission</h3>
-                    <p class="text-gray-600 mb-4">At Aqua Bridge, our mission is to empower shrimp farmers by solving critical harvesting and market linkage challenges. We believe in creating a fair, efficient, and transparent ecosystem where farmers get the value they deserve for their hard work.</p>
-                    <p class="text-gray-600">We leverage technology and a strong network to bridge the gap between farmers and buyers, offering services that streamline the post-harvest process and guarantee financial security for the farming community.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-gray-300">
-        <div class="container mx-auto py-12 px-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                
-                <!-- About Column -->
-                <div>
-                    <h3 class="text-xl font-bold text-white mb-4"><span class="text-blue-400">Aqua</span>Bridge</h3>
-                    <p class="mb-4">Connecting shrimp farmers directly to the market, ensuring fair prices and instant payments.</p>
-                    <div class="flex space-x-4 justify-center">
-                        <a href="https://www.instagram.com/iamaadityamurali/" target="_blank" class="text-gray-300 hover:text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zM12 8.118c-2.136 0-3.873 1.737-3.873 3.873s1.737 3.873 3.873 3.873 3.873-1.737 3.873-3.873c0-2.136-1.737-3.873-3.873-3.873zM12 14.354c-1.29 0-2.336-.99-2.336-2.22s1.046-2.22 2.336-2.22 2.336.99 2.336 2.22c0 1.23-.99 2.22-2.336 2.22zM18.804 6.116a1.456 1.456 0 100-2.912 1.456 1.456 0 000 2.912z" clip-rule="evenodd" /></svg></a>
-                        <a href="https://wa.me/919492391762" target="_blank" class="text-gray-300 hover:text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01s-.521.074-.792.372c-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.203 5.076 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg></a>
-                        <a href="https://www.youtube.com/@BmkTalks" target="_blank" class="text-gray-300 hover:text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.78 22 12 22 12s0 3.22-.42 4.814a2.506 2.506 0 0 1-1.768 1.768c-1.594.42-7.812.42-7.812.42s-6.218 0-7.812-.42a2.506 2.506 0 0 1-1.768-1.768C2 15.22 2 12 2 12s0-3.22.42-4.814a2.506 2.506 0 0 1 1.768-1.768C5.782 5 12 5 12 5s6.218 0 7.812.418zM9.94 15.582V8.418L15.924 12 9.94 15.582z" clip-rule="evenodd" /></svg></a>
-                    </div>
-                </div>
-
-                <!-- Quick Links Column -->
-                <div class="hidden md:block">
-                    <h3 class="text-lg font-semibold text-white mb-4">Quick Links</h3>
-                    <ul>
-                        <li class="mb-2"><a href="#services" class="hover:text-white transition-colors">Services</a></li>
-                        <li class="mb-2"><a href="#live-prices" class="hover:text-white transition-colors">Live Prices</a></li>
-                        <li class="mb-2"><a href="#contact" class="hover:text-white transition-colors">Contact</a></li>
-                        <li class="mb-2"><a href="#team" class="hover:text-white transition-colors">Our team</a></li>
-                        <li class="mb-2"><a href="#about" class="hover:text-white transition-colors">About Us</a></li>
-                    </ul>
-                </div>
-
-                <!-- Contact Info Column -->
-                <div>
-                    <h3 class="text-lg font-semibold text-white mb-4">Contact Us</h3>
-                    <ul class="inline-block text-left">
-                        <li class="mb-3 flex items-start">
-                            <svg class="w-5 h-5 mr-3 mt-1 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            <span>3-3-39 Nawabpeta, Nellore, Andhra Pradesh, India</span>
-                        </li>
-                        <li class="mb-3 flex items-start">
-                            <svg class="w-5 h-5 mr-3 mt-1 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                            <a href="tel:+917995675571" class="hover:text-white transition-colors">+919492391762</a>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 mr-3 mt-1 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                            <a href="mailto:aquabridgeindia@gmail.com" class="hover:text-white transition-colors">aquabridgeindia@gmail.com</a>
-                        </li>
-                    </ul>
-                </div>
-
-            </div>
-            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-sm">
-                <p>&copy; 2025 Aqua Bridge. All Rights Reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Coming Soon Modal -->
-    <div id="coming-soon-modal" class="hidden fixed inset-0 z-50 overflow-auto modal-backdrop flex items-center justify-center">
-        <div class="bg-white p-8 rounded-lg shadow-lg text-center max-w-sm mx-auto">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Coming Soon!</h2>
-            <p class="text-gray-600 mb-6">Our app is under development and will be launched soon. Thank you for your interest!</p>
-            <button id="close-modal-button" class="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition duration-300">Close</button>
-        </div>
+<!-- ============ HEADER ============ -->
+<header id="header">
+  <nav class="nav">
+    <a href="#top" class="brand"><span class="drop"></span>Aqua<b>Bridge</b></a>
+    <div class="navlinks">
+      <a href="#services">Services</a>
+      <a href="#prices">Live Prices</a>
+      <a href="#about">About</a>
+      <a href="#team">Team</a>
+      <a href="#contact">Contact</a>
     </div>
+    <div class="nav-cta">
+      <button class="btn btn-ghost" data-modal>Download App</button>
+      <a href="#contact" class="btn btn-primary">Get Started</a>
+    </div>
+    <button class="hamburger" id="burger" aria-label="Menu">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#services">Services</a>
+    <a href="#prices">Live Prices</a>
+    <a href="#about">About</a>
+    <a href="#team">Team</a>
+    <a href="#contact">Contact</a>
+    <button class="btn btn-ghost" data-modal>Download App</button>
+    <a href="#contact" class="btn btn-primary">Get Started</a>
+  </div>
+</header>
 
-    <script>
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-        
-        // --- Shrimp Prices ---
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="hero-pill"><span class="dot"></span> Andhra Pradesh · Aquaculture Marketplace</span>
+        <h1>The future of <em>shrimp harvesting</em> is <span class="shrimp">on the bridge</span>.</h1>
+        <p class="lede">Aqua Bridge connects shrimp farmers directly to the market — fair prices, transparent processes, and instant spot payments. You focus on farming; we'll handle the rest.</p>
+        <div class="hero-actions">
+          <a href="#services" class="btn btn-light">Explore Services</a>
+          <a href="https://wa.me/919492391762" target="_blank" rel="noopener" class="btn btn-outline-light">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+            Talk to us
+          </a>
+        </div>
+        <div class="hero-trust">
+          <div class="t"><b>Same-day</b><span>Spot payment</span></div>
+          <div class="t"><b>10+</b><span>Count grades priced</span></div>
+          <div class="t"><b>24/7</b><span>Farmer support</span></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-img-card">
+          <img src="aqgya.jpeg" alt="Aqua Bridge farmers receiving instant payment beside a shrimp pond" loading="eager">
+        </div>
+        <div class="float-card fc-1">
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div>
+          <div><small>Harvest sold</small><strong>Fair price locked</strong></div>
+        </div>
+        <div class="float-card fc-2">
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h2m11-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg></div>
+          <div><small>Paid instantly</small><strong>At the farm gate</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="wave-bottom">
+    <svg viewBox="0 0 1440 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,48 C240,96 480,8 720,36 C960,64 1200,96 1440,48 L1440,90 L0,90 Z" fill="#06282a"/>
+    </svg>
+  </div>
+</section>
 
-        const priceGrid = document.getElementById('price-grid');
-        const lastUpdatedEl = document.getElementById('last-updated');
+<!-- ============ MARQUEE ============ -->
+<div class="strip">
+  <div class="marquee">
+    <span>Efficient Harvesting</span><span>Spot Payment</span><span>Fair Market Price</span><span>Smart Price Matching</span><span>24/7 Support</span><span>Free Lab Testing</span>
+    <span>Efficient Harvesting</span><span>Spot Payment</span><span>Fair Market Price</span><span>Smart Price Matching</span><span>24/7 Support</span><span>Free Lab Testing</span>
+  </div>
+</div>
 
-        // Manual prices for different shrimp counts
-        const shrimpPrices = {
-            
-            '30 Count': 420,
-            '40 Count': 360,
-            '50 Count': 330,
-            '60 Count': 310,
-            '70 Count': 290,
-            '80 Count': 260,
-            '90 Count': 240,
-            '100 Count':230,
-            '110 Count':220,
-            '120 Count':210,
-        };
+<!-- ============ SERVICES ============ -->
+<section class="services" id="services">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">What we do</span>
+      <h2>End-to-end support for the modern shrimp farmer.</h2>
+      <p>From the moment you're ready to harvest to the moment you're paid — Aqua Bridge handles every step.</p>
+    </div>
+    <div class="svc-grid">
+      <div class="svc feature reveal">
+        <span class="num">01</span>
+        <div class="svc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095a2 2 0 00-1.736.97l-1.9 3.8a2 2 0 00.23 2.16l3.2 3.2M7 20H4a1 1 0 01-1-1v-7a1 1 0 011-1h3"/></svg></div>
+        <h3>Efficient Harvesting</h3>
+        <p>Professional, timely harvesting that minimizes stress on your shrimp and maximizes yield quality.</p>
+      </div>
+      <div class="svc reveal">
+        <span class="num">02</span>
+        <div class="svc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg></div>
+        <h3>Spot Payment</h3>
+        <p>No more waiting. Get immediate payment for your produce right at the farm gate — financial peace of mind, every harvest.</p>
+      </div>
+      <div class="svc reveal">
+        <span class="num">03</span>
+        <div class="svc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg></div>
+        <h3>Fair Market Price</h3>
+        <p>Direct buyer connections and transparent pricing guarantee you the best possible rate for your shrimp.</p>
+      </div>
+      <div class="svc reveal">
+        <span class="num">04</span>
+        <div class="svc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></div>
+        <h3>Smart Price Matching</h3>
+        <p>Our matching engine pairs your harvest with the highest-bidding buyers, so you always get the most competitive price.</p>
+      </div>
+      <div class="svc reveal">
+        <span class="num">05</span>
+        <div class="svc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg></div>
+        <h3>24/7 Farmer Support</h3>
+        <p>Questions any time? Our team of aquaculture experts is available around the clock to help with your farming needs.</p>
+      </div>
+      <div class="svc reveal">
+        <span class="num">06</span>
+        <div class="svc-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg></div>
+        <h3>Free Lab Testing</h3>
+        <p>Complimentary water and soil testing keeps your ponds healthy for optimal, consistent shrimp growth.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-        function renderPrices() {
-            priceGrid.innerHTML = ''; // Clear existing prices
-            for (const [count, price] of Object.entries(shrimpPrices)) {
-                const card = `
-                    <div class="price-card bg-white p-6 rounded-lg shadow-md text-center border-l-4 border-green-300">
-                        <h3 class="text-lg font-semibold text-gray-700">${count}</h3>
-                        <p class="text-3xl font-bold text-gray-900 my-2">₹${price.toFixed(2)}</p>
-                        <div class="flex items-center justify-center text-sm text-green-500">
-                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9 9a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"></path></svg>
-                            <span>Current Price</span>
-                        </div>
-                    </div>
-                `;
-                priceGrid.innerHTML += card;
-            }
-            // Update the timestamp to show when the page was loaded
-            lastUpdatedEl.textContent = new Date().toLocaleString('en-IN');
-        }
+<!-- ============ LIVE PRICES ============ -->
+<section class="prices" id="prices">
+  <div class="wrap">
+    <div class="prices-top">
+      <div class="reveal">
+        <span class="eyebrow">Market board</span>
+        <h2>Andhra shrimp prices</h2>
+        <p class="updated">Last updated: <span id="last-updated"></span></p>
+      </div>
+      <span class="live-badge reveal"><span class="dot"></span> Live · indicative rates</span>
+    </div>
+    <div class="price-grid" id="price-grid"></div>
+    <p class="price-note">Rates are indicative and may vary by region, quality and demand. Contact us for a confirmed quote on your harvest.</p>
+  </div>
+</section>
 
-        // Initial render on page load
-        renderPrices();
+<!-- ============ ABOUT ============ -->
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-imgwrap reveal">
+        <img src="aqgya.png" onerror="this.onerror=null;this.src='https://placehold.co/600x480/0f8a82/ffffff?text=Aqua+Bridge';" alt="Aqua Bridge team supporting shrimp farmers">
+        <div class="badge"><b>Farmer-first</b><span>Built around the people who grow.</span></div>
+      </div>
+      <div class="reveal">
+        <span class="eyebrow">Who we are</span>
+        <h2>Revolutionizing the shrimp supply chain, one harvest at a time.</h2>
+        <p>At Aqua Bridge, our mission is to empower shrimp farmers by solving critical harvesting and market-linkage challenges. We believe in a fair, efficient, and transparent ecosystem where farmers get the value they deserve for their hard work.</p>
+        <p>We leverage technology and a strong network to bridge the gap between farmers and buyers — streamlining the post-harvest process and guaranteeing financial security for the farming community.</p>
+        <ul class="about-points">
+          <li><span class="chk"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span> Transparent, farmer-friendly pricing</li>
+          <li><span class="chk"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span> Direct access to verified buyers</li>
+          <li><span class="chk"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span> Payment security from harvest to sale</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
-        // --- Coming Soon Modal ---
-        const downloadAppButton = document.getElementById('download-app-button');
-        const downloadAppButtonMobile = document.getElementById('download-app-button-mobile');
-        const comingSoonModal = document.getElementById('coming-soon-modal');
-        const closeModalButton = document.getElementById('close-modal-button');
+<!-- ============ TEAM ============ -->
+<section class="team" id="team">
+  <div class="wrap">
+    <div class="section-head reveal" style="text-align:center;margin:0 auto 50px">
+      <span class="eyebrow" style="justify-content:center">The people</span>
+      <h2 style="margin-top:16px">Meet the team behind Aqua Bridge.</h2>
+    </div>
+    <div class="team-card reveal">
+      <img src="myimage.jpg" alt="Murali Krishna, Founder of Aqua Bridge">
+      <div class="team-info">
+        <span class="role">Founder</span>
+        <h3>Murali Krishna</h3>
+        <p>Driving Aqua Bridge's mission to give every shrimp farmer fair prices, instant payments, and a partner they can rely on — from the pond to the point of sale.</p>
+        <div class="team-socials">
+          <a href="https://www.instagram.com/iamaadityamurali/" target="_blank" rel="noopener" aria-label="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.9 4.9 0 011.772 1.153 4.9 4.9 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.9 4.9 0 01-1.153 1.772 4.9 4.9 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.9 4.9 0 01-1.772-1.153 4.9 4.9 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427C2.013 15.099 2 14.745 2 12.315s.013-2.784.06-3.808c.049-1.064.218-1.791.465-2.427A4.9 4.9 0 013.678 4.31 4.9 4.9 0 015.45 3.157c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.255 2 12.315 2zM12 8.118a3.882 3.882 0 100 7.764 3.882 3.882 0 000-7.764zM12 14.4a2.4 2.4 0 110-4.8 2.4 2.4 0 010 4.8zm4.804-8.284a.96.96 0 100 1.92.96.96 0 000-1.92z" clip-rule="evenodd"/></svg></a>
+          <a href="https://wa.me/919492391762" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.746 5.634l-.999 3.648 3.742-.981z"/></svg></a>
+          <a href="https://www.youtube.com/@BmkTalks" target="_blank" rel="noopener" aria-label="YouTube"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.78 22 12 22 12s0 3.22-.42 4.814a2.506 2.506 0 01-1.768 1.768c-1.594.42-7.812.42-7.812.42s-6.218 0-7.812-.42a2.506 2.506 0 01-1.768-1.768C2 15.22 2 12 2 12s0-3.22.42-4.814a2.506 2.506 0 011.768-1.768C5.782 5 12 5 12 5s6.218 0 7.812.418zM9.94 15.582V8.418L15.924 12 9.94 15.582z" clip-rule="evenodd"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        const openModal = () => {
-            comingSoonModal.classList.remove('hidden');
-        }
+<!-- ============ CONTACT ============ -->
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="section-head reveal" style="text-align:center;margin:0 auto 50px">
+      <span class="eyebrow" style="justify-content:center">Get in touch</span>
+      <h2 style="margin-top:16px">Ready to sell smarter? Let's talk.</h2>
+      <p style="margin:14px auto 0">Reach us through whichever channel is easiest — we usually respond fast.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="ccard phone reveal">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.04 11.04 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg></div>
+        <h3>Phone</h3>
+        <a href="tel:+919492391762">+91 94923 91762</a>
+      </div>
+      <div class="ccard mail reveal">
+        <div class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div>
+        <h3>Email</h3>
+        <a href="mailto:aquabridgeindia@gmail.com">aquabridgeindia@gmail.com</a>
+      </div>
+      <div class="ccard wa reveal">
+        <div class="ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.746 5.634l-.999 3.648 3.742-.981z"/></svg></div>
+        <h3>WhatsApp</h3>
+        <span class="info">Chat with our team</span>
+        <a href="https://wa.me/919492391762" target="_blank" rel="noopener" class="btn">Connect Now</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-        const closeModal = () => {
-            comingSoonModal.classList.add('hidden');
-        }
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot">
+        <div class="foot-brand"><span class="drop"></span>Aqua<b>Bridge</b></div>
+        <p>Connecting shrimp farmers directly to the market — ensuring fair prices, transparent processes, and instant payments.</p>
+        <div class="foot-soc">
+          <a href="https://www.instagram.com/iamaadityamurali/" target="_blank" rel="noopener" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.9 4.9 0 011.772 1.153 4.9 4.9 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.9 4.9 0 01-1.153 1.772 4.9 4.9 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.9 4.9 0 01-1.772-1.153 4.9 4.9 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427C2.013 15.099 2 14.745 2 12.315s.013-2.784.06-3.808c.049-1.064.218-1.791.465-2.427A4.9 4.9 0 013.678 4.31 4.9 4.9 0 015.45 3.157c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.255 2 12.315 2zM12 8.118a3.882 3.882 0 100 7.764 3.882 3.882 0 000-7.764zM12 14.4a2.4 2.4 0 110-4.8 2.4 2.4 0 010 4.8zm4.804-8.284a.96.96 0 100 1.92.96.96 0 000-1.92z" clip-rule="evenodd"/></svg></a>
+          <a href="https://wa.me/919492391762" target="_blank" rel="noopener" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.488 11.82 11.82 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.746 5.634l-.999 3.648 3.742-.981z"/></svg></a>
+          <a href="https://www.youtube.com/@BmkTalks" target="_blank" rel="noopener" aria-label="YouTube"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.78 22 12 22 12s0 3.22-.42 4.814a2.506 2.506 0 01-1.768 1.768c-1.594.42-7.812.42-7.812.42s-6.218 0-7.812-.42a2.506 2.506 0 01-1.768-1.768C2 15.22 2 12 2 12s0-3.22.42-4.814a2.506 2.506 0 011.768-1.768C5.782 5 12 5 12 5s6.218 0 7.812.418zM9.94 15.582V8.418L15.924 12 9.94 15.582z" clip-rule="evenodd"/></svg></a>
+        </div>
+      </div>
+      <div class="foot">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#prices">Live Prices</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#team">Team</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="foot">
+        <h4>Contact Us</h4>
+        <ul class="foot-contact">
+          <li><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg></span> 3-3-39 Nawabpeta, Nellore, Andhra Pradesh, India</li>
+          <li><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.04 11.04 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg></span> <a href="tel:+919492391762">+91 94923 91762</a></li>
+          <li><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></span> <a href="mailto:aquabridgeindia@gmail.com">aquabridgeindia@gmail.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">&copy; 2025 Aqua Bridge. All rights reserved.</div>
+  </div>
+</footer>
 
-        downloadAppButton.addEventListener('click', openModal);
-        downloadAppButtonMobile.addEventListener('click', openModal);
-        closeModalButton.addEventListener('click', closeModal);
-        
-        // Close modal if backdrop is clicked
-        comingSoonModal.addEventListener('click', (e) => {
-            if (e.target === comingSoonModal) {
-                closeModal();
-            }
-        });
+<!-- ============ MODAL ============ -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="mic"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path stroke-linecap="round" d="M11 18h2"/></svg></div>
+    <h3>Coming soon!</h3>
+    <p>Our app is under development and will launch shortly. Thanks for your interest — we can't wait to put Aqua Bridge in your pocket.</p>
+    <button class="btn btn-primary" id="closeModal" style="width:100%;justify-content:center">Got it</button>
+  </div>
+</div>
 
-    </script>
+<script>
+/* Header scroll state */
+const header=document.getElementById('header');
+addEventListener('scroll',()=>header.classList.toggle('scrolled',scrollY>20));
 
+/* Mobile menu */
+const burger=document.getElementById('burger'),mm=document.getElementById('mobileMenu');
+burger.addEventListener('click',()=>mm.classList.toggle('open'));
+mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>mm.classList.remove('open')));
+
+/* Live prices */
+const shrimpPrices={'30':420,'40':360,'50':330,'60':310,'70':290,'80':260,'90':240,'100':230,'110':220,'120':210};
+const grid=document.getElementById('price-grid');
+const counts=Object.values(shrimpPrices),max=Math.max(...counts),min=Math.min(...counts);
+let html='';
+for(const[count,price]of Object.entries(shrimpPrices)){
+  const w=30+((price-min)/(max-min))*70;
+  html+=`<div class="pcard reveal">
+    <div class="grade">${count} Count</div>
+    <div class="val"><span class="cur">₹</span>${price}</div>
+    <div class="unit">per kg · indicative</div>
+    <div class="bar" style="width:${w}%"></div>
+  </div>`;
+}
+grid.innerHTML=html;
+document.getElementById('last-updated').textContent=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+
+/* Modal */
+const modal=document.getElementById('modal');
+document.querySelectorAll('[data-modal]').forEach(b=>b.addEventListener('click',()=>modal.classList.add('show')));
+document.getElementById('closeModal').addEventListener('click',()=>modal.classList.remove('show'));
+modal.addEventListener('click',e=>{if(e.target===modal)modal.classList.remove('show')});
+
+/* Reveal on scroll */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
 </body>
 </html>
